@@ -1,0 +1,54 @@
+Description: move /usr/amdgcn to /usr/share/amdgcn
+ /usr/amdgcn raises lintian warning about files in unusual dirs.
+ amdgcn/bitcode contains CPU architecture independent binaries,
+ so /usr/share should be just the right place to put them into.
+ The test suite needs a slight adjustment to be able to find the
+ bitcodes at the new location, so that may preclude to other
+ changes of similar amplitude in reverse dependencies.
+Author: Étienne Mollier <emollier@debian.org>
+Forwarded: https://github.com/RadeonOpenCompute/ROCm-Device-Libs/issues/79
+Last-Update: 2022-01-22
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+--- rocm-device-libs.orig/cmake/OCL.cmake
++++ rocm-device-libs/cmake/OCL.cmake
+@@ -33,7 +33,7 @@
+ set (LIB_SUFFIX ".lib${BC_EXT}")
+ set (STRIP_SUFFIX ".strip${BC_EXT}")
+ set (FINAL_SUFFIX "${BC_EXT}")
+-set (INSTALL_ROOT_SUFFIX "amdgcn/bitcode")
++set (INSTALL_ROOT_SUFFIX lib/$ENV{DEB_HOST_MULTIARCH}/amdgcn/bitcode)
+ 
+ # Set `inc_options` to contain Clang command-line for include directories for
+ # current source directory.
+--- rocm-device-libs.orig/cmake/Packages.cmake
++++ rocm-device-libs/cmake/Packages.cmake
+@@ -16,7 +16,7 @@
+   @ONLY)
+ 
+ 
+-set(install_path_suffix "amdgcn/bitcode")
++set(install_path_suffix lib/$ENV{DEB_HOST_MULTIARCH}/amdgcn/bitcode)
+ 
+ # Generate the install-tree package.
+ # We do not know the absolute path to the intall tree until we are installed,
+--- rocm-device-libs.orig/test/constant_folding/RunConstantFoldTest.cmake
++++ rocm-device-libs/test/constant_folding/RunConstantFoldTest.cmake
+@@ -16,6 +16,7 @@
+   -target amdgcn-amd-amdhsa -mcpu=${TEST_CPU}
+   -Xclang -finclude-default-header
+   --rocm-path=${BINARY_DIR}
++  --rocm-device-lib-path=${AMDGCN_BITCODES}
+   -mllvm -amdgpu-simplify-libcall=0
+   -o ${OUTPUT_FILE} ${INPUT_FILE}
+   RESULT_VARIABLE CLANG_RESULT
+--- rocm-device-libs.orig/test/constant_folding/CMakeLists.txt
++++ rocm-device-libs/test/constant_folding/CMakeLists.txt
+@@ -30,6 +30,7 @@
+      -DFILECHECK_BIN=${FILECHECK_BIN}
+      -DOUTPUT_FILE=output.${name}.ll
+      -DINPUT_FILE=${CMAKE_CURRENT_SOURCE_DIR}/${name}.cl
++     -DAMDGCN_BITCODES=${PROJECT_BINARY_DIR}/lib/$ENV{DEB_HOST_MULTIARCH}/amdgcn/bitcode
+      -DTEST_CPU=gfx900
+      -P ${CMAKE_CURRENT_SOURCE_DIR}/RunConstantFoldTest.cmake)
+ endfunction()

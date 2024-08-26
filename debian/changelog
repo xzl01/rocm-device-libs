@@ -1,5 +1,56 @@
-template-repository (1.0-1) unstable; urgency=medium
+rocm-device-libs (5.2.3-2) unstable; urgency=medium
 
-  * Initial release
+  * d/rules: link atomic for platforms which need it.
+  * d/salsa-ci.yml: disable blhc test; no hardening.
 
- -- Tsic404 <liuheng@deepin.org>  Sat, 28 Jan 2023 13:46:49 +0800
+ -- Étienne Mollier <emollier@debian.org>  Sun, 20 Nov 2022 19:41:59 +0100
+
+rocm-device-libs (5.2.3-1) unstable; urgency=medium
+
+  * Migrate ROCm 5.2.3 to unstable.
+  * d/control: build depends on ROCm 5.2 packages.
+  * d/control: bump build dependency to llvm 15.
+  * d/control: update build-dependencies to new llvm packages layout.
+
+ -- Étienne Mollier <emollier@debian.org>  Tue, 18 Oct 2022 18:03:30 +0200
+
+rocm-device-libs (5.2.3-1~0exp0) experimental; urgency=medium
+
+  * New upstream version
+  * Standards-Version: 4.6.1 (routine-update)
+  * Reorder sequence of d/control fields by cme (routine-update)
+  * d/rules: remove directory tree containing only an extra license file.
+
+ -- Étienne Mollier <emollier@debian.org>  Tue, 06 Sep 2022 20:33:33 +0200
+
+rocm-device-libs (5.1.0-1) unstable; urgency=medium
+
+  * New upstream version 5.1.0
+  * Require rocm-cmake (>= 5.1.0~) as B-D.
+
+ -- Mo Zhou <lumin@debian.org>  Thu, 07 Apr 2022 12:21:26 -0400
+
+rocm-device-libs (5.0.0-1) unstable; urgency=medium
+
+  [ Maxime Chambonnet ]
+  * New upstream version 5.0.0
+  * d/rules: -$(RM) obj-* (temporary build directory).
+  * Update LLVM BD to version 14
+
+  [ Étienne Mollier ]
+  * cmake-amdgcn-bitcode.patch: forwarded upstream
+  * d/rules: make clean step triplet independent
+  * d/control: rocm-device-libs Architecture: any
+  * cmake-amdgcn-bitcode.patch: target TRIPLET
+
+  [ Mo Zhou ]
+  * Add versioned requirement (>= 5.0.0~) on B-D rocm-cmake.
+  * Upload to unstable.
+
+ -- Mo Zhou <lumin@debian.org>  Mon, 14 Feb 2022 16:05:54 -0500
+
+rocm-device-libs (4.5.2-1~exp1) experimental; urgency=medium
+
+  * Initial release. (Closes: #1004309)
+
+ -- Étienne Mollier <emollier@debian.org>  Thu, 03 Feb 2022 22:23:34 +0100

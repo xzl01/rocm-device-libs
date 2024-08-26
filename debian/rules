@@ -1,4 +1,19 @@
 #!/usr/bin/make -f
+export DEB_BUILD_MAINT_OPTIONS = hardening=-all
+
+ifneq ($(filter $(DEB_HOST_ARCH),armel mipsel powerpc),)
+CMAKEFLAGS += -DCMAKE_CXX_STANDARD_LIBRARIES=-latomic
+endif
 
 %:
-	dh $@
+	dh $@ -Scmake
+
+execute_before_dh_clean:
+	-$(RM) -rf obj-*/
+
+override_dh_auto_configure:
+	dh_auto_configure -- $(CMAKEFLAGS)
+
+execute_before_dh_install:
+	# The directory below only contains a license file deep in the tree.
+	rm -rvf $(CURDIR)/debian/rocm-device-libs/usr/share/doc/ROCm-Device-Libs

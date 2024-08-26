@@ -1,0 +1,4 @@
+version=4
+opts="filenamemangle=s%(?:.*?)?rocm-(\d[\d.]*)\.tar\.gz%@PACKAGE@-$1.tar.gz%" \
+	https://github.com/RadeonOpenCompute/ROCm-Device-Libs/tags \
+	(?:.*?/)?rocm-@ANY_VERSION@@ARCHIVE_EXT@
